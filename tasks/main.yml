@@ -1,2 +1,54 @@
 ---
 # tasks file for ansible-ark-survival
+---
+- name: Ensure Ark Survival user group exists
+  ansible.builtin.group:
+    name: "{{ ark_survival_group }}"
+    state: present
+
+- name: Ensure Ark Survival user exists
+  ansible.builtin.user:
+    name: "{{ ark_survival_name }}"
+    group: "{{ ark_survival_group }}"
+    shell: /usr/sbin/nologin
+    state: present
+
+- name: Install SteamCMD and Ark server
+  ansible.builtin.include_tasks: steamcmd.yml
+
+- name: Ensure ark service is present
+  ansible.builtin.template:
+    src: ark.service.j2
+    dest: /etc/systemd/system/ark.service
+    mode: "0644"
+
+- name: Ensure ark file permissions are correct
+  ansible.builtin.file:
+    path: "/home/{{ ark_survival_name }}/ark"
+    state: directory
+    name: "{{ ark_survival_name }}"
+    group: "{{ ark_survival_group }}"
+    mode: "0755"
+    recurse: true
+
+- name: Ensure game user settings file is present
+  ansible.builtin.copy:
+    src: GameUserSettings.ini
+    dest: "/home/{{ user_name }}/ark/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini"
+    owner: "{{ ark_survival_name }}"
+    group: "{{ ark_survival_group }}"
+    mode: "0644"
+
+# - name: Ensure mods are present
+#   ansible.builtin.copy:
+#     src: ./mods/
+#     dest: "/home/{{ user_name }}/ark/ShooterGame/Content/Mods/"
+#     owner: "{{ ark_survival_name }}"
+#     group: "{{ ark_survival_group }}"
+#     mode: "0755"
+
+- name: Enable and start ark service
+  ansible.builtin.service:
+    name: ark
+    enabled: yes
+    state: started

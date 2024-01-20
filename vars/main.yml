@@ -1,2 +1,15 @@
 ---
 # vars file for ansible-ark-survival
+ark_survival_name: ark
+ark_survival_group: ark
+
+ark_survival_app_id: 376030
+
+ark_survival_server_name: "My Ark Survival Server"
+ark_survival_max_players: 10
+ark_survival_mods: []
+
+ark_survival_query_port: 27015
+ark_survival_rcon_enabled: true
+ark_survival_rcon_port: 32330
+ark_survival_port: 7777

@@ -1,0 +1,46 @@
+---
+- name: Update cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Ensure required packages are installed
+  ansible.builtin.package:
+    name:
+      - software-properties-common
+      - lib32gcc-s1
+      - steamcmd
+    state: present
+
+- name: Create a symbolic link
+  ansible.builtin.file:
+    src: /usr/games/steamcmd
+    dest: "/home/{{ ark_survival_name }}/steamcmd"
+    name: "{{ ark_survival_name }}"
+    group: "{{ ark_survival_group }}"
+    state: link
+
+- name: Install Ark files
+  ansible.builtin.command: |
+    /home/{{ ark_survival_name }}/steamcmd
+    +force_install_dir /home/{{ ark_survival_name }}/ark
+    +login anonymous
+    +app_update {{ ark_survival_app_id }} validate
+    +quit
+  args:
+    creates: "/home/{{ ark_survival_name }}/ark/ShooterGame/Binaries/Linux/ShooterGameServer"
+  become: true
+  become_user: "{{ ark_survival_name }}"
+
+- name: Install Ark mods
+  ansible.builtin.command: |
+    /home/{{ ark_survival_name }}/steamcmd
+    +force_install_dir /home/{{ ark_survival_name }}/ark
+    +login anonymous
+    +workshop_download_item {{ ark_survival_app_id }} {{ item }}
+    +quit
+  args:
+    creates: "/home/{{ ark_survival_name }}/ark/ShooterGame/Content/Mods/{{ item }}"
+  become: true
+  become_user: "{{ ark_survival_name }}"
+  with_items: "{{ ark_survival_mods }}"

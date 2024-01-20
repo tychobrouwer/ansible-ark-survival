@@ -1,0 +1,17 @@
+[Unit]
+Description=Ark Survival server service
+After=network.target
+
+[Service]
+Type=exec
+User={{ ark_survival_name }}
+Group={{ ark_survival_name }}
+WorkingDirectory=/home/{{ ark_survival_name }}/ark/ShooterGame/Binaries/Linux
+ExecStartPre=/home/{{ ark_survival_name }}/steamcmd +force_install_dir /home/{{ ark_survival_name }}/ark +login anonymous +app_update {{ ark_survival_app_id }} +quit
+ExecStart=/home/{{ ark_survival_name }}/ark/ShooterGame/Binaries/Linux/ShooterGameServer Valguero_P?listen?Multihome=0.0.0.0?SessionName="{{ ark_survival_server_name }}"?MaxPlayers={{ ark_survival_max_players }}?QueryPort={{ ark_survival_query_port }}?RCONEnabled=True?RCONPort={{ ark_survival_rcon_port }}?Port={{ ark_survival_port }}?ServerAdminPassword={{ ark_survival_admin_password }} -server -log -servergamelog -crossplay -automanagedmods
+LimitNOFILE=100000
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s INT $MAINPID
+
+[Install]
+WantedBy=multi-user.target
