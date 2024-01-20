@@ -1,6 +1,5 @@
 ---
 # tasks file for ansible-ark-survival
----
 - name: Ensure Ark Survival user group exists
   ansible.builtin.group:
     name: "{{ ark_survival_group }}"
@@ -38,14 +37,6 @@
     owner: "{{ ark_survival_name }}"
     group: "{{ ark_survival_group }}"
     mode: "0644"
-
-# - name: Ensure mods are present
-#   ansible.builtin.copy:
-#     src: ./mods/
-#     dest: "/home/{{ user_name }}/ark/ShooterGame/Content/Mods/"
-#     owner: "{{ ark_survival_name }}"
-#     group: "{{ ark_survival_group }}"
-#     mode: "0755"
 
 - name: Enable and start ark service
   ansible.builtin.service:
