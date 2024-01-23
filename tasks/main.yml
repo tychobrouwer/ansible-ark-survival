@@ -41,5 +41,5 @@
 - name: Enable and start ark service
   ansible.builtin.service:
     name: ark
-    enabled: yes
+    enabled: true
     state: started
