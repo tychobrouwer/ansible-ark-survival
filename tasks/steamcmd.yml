@@ -29,8 +29,8 @@
     +quit
   args:
     creates: "/home/{{ ark_survival_name }}/ark/ShooterGame/Binaries/Linux/ShooterGameServer"
-  become: true
-  become_user: "{{ ark_survival_name }}"
+  # become: true
+  # become_user: "{{ ark_survival_name }}"
 
 - name: Install Ark mods
   ansible.builtin.command: |
@@ -41,6 +41,13 @@
     +quit
   args:
     creates: "/home/{{ ark_survival_name }}/ark/ShooterGame/Content/Mods/{{ item }}"
-  become: true
-  become_user: "{{ ark_survival_name }}"
+  # become: true
+  # become_user: "{{ ark_survival_name }}"
   with_items: "{{ ark_survival_mods }}"
+
+- name: Ensure Ark directory permissisions are set
+  ansible.builtin.file:
+    path: "/home/{{ ark_survival_name }}"
+    owner: "{{ ark_survival_name }}"
+    group: "{{ ark_survival_group }}"
+    recurse: true
