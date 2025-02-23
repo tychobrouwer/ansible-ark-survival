@@ -24,19 +24,23 @@ Example Playbook
 ----------------
 
 ```yaml
-    - hosts: servers
-      vars:
-        ark_survival_admin_password: password123
-        ark_survival_mods: [1609138312, 731604991, 849985437]
-        ark_survival_max_players: 10
-        ark_survival_server_name: "My Ark Survival Server"
+- hosts: servers
+  vars:
+    ark_survival_admin_password: password123
 
-      roles:
-         - { role: tychobrouwer.ark_survival }
+  roles:
+    - role: tychobrouwer.ark_survival
 
-         - { role: tychobrouwer.ark_survival, ark_survival_query_port: 27015, ark_survival_rcon_enabled: true,
-             ark_survival_rcon_port: 32330, ark_survival_port: 7777,
-             ark_survival_name: ark, ark_survival_group: ark }
+    - role: tychobrouwer.ark_survival
+      ark_survival_max_players: 10
+      ark_survival_server_name: "My Ark Survival Server"
+      ark_survival_mods: [1609138312, 731604991, 849985437]
+      ark_survival_query_port: 27015
+      ark_survival_rcon_enabled: true
+      ark_survival_rcon_port: 32330
+      ark_survival_port: 7777
+      ark_survival_name: ark
+      ark_survival_group: ark
 
 ```
 
