@@ -10,22 +10,18 @@
     name: "{{ ark_survival_name }}"
     group: "{{ ark_survival_group }}"
     shell: /usr/sbin/nologin
+    create_home: true
+    home: "/home/{{ ark_survival_name }}"
     state: present
 
 - name: Install SteamCMD and Ark server
   ansible.builtin.include_tasks: steamcmd.yml
 
-- name: Ensure ark service is present
-  ansible.builtin.template:
-    src: ark.service.j2
-    dest: /etc/systemd/system/ark.service
-    mode: "0644"
-
-- name: Ensure ark file permissions are correct
+- name: Ensure Ark server directory exists with correct permissions
   ansible.builtin.file:
     path: "/home/{{ ark_survival_name }}/ark"
     state: directory
-    name: "{{ ark_survival_name }}"
+    owner: "{{ ark_survival_name }}"
     group: "{{ ark_survival_group }}"
     mode: "0755"
     recurse: true
@@ -33,13 +29,21 @@
 - name: Ensure game user settings file is present
   ansible.builtin.copy:
     src: GameUserSettings.ini
-    dest: "/home/{{ user_name }}/ark/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini"
+    dest: "/home/{{ ark_survival_name }}/ark/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini"
     owner: "{{ ark_survival_name }}"
     group: "{{ ark_survival_group }}"
     mode: "0644"
+  notify: Restart ark service
+
+- name: Ensure Ark service file is present
+  ansible.builtin.template:
+    src: ark.service.j2
+    dest: /etc/systemd/system/ark.service
+    mode: "0644"
+  notify: Restart ark service
 
 - name: Enable and start ark service
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: ark
     enabled: true
     state: started
